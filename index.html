@@ -449,10 +449,47 @@
     </div>
 
     <script>
-      // تحديث الكود JavaScript الحالي
+        function toggleTask(checkbox) {
+            const taskCell = checkbox.closest('.task-cell');
+            const taskText = taskCell.querySelector('.task-text');
 
-// دالة لحفظ حالة المهام في localStorage
-function saveTasksState() {
+            if (checkbox.checked) {
+                taskCell.classList.add('completed');
+                taskText.style.textDecoration = 'line-through';
+            } else {
+                taskCell.classList.remove('completed');
+                taskText.style.textDecoration = 'none';
+            }
+            updateProgress();
+        }
+
+        function editTask(button) {
+            const taskCell = button.closest('.task-cell');
+            const editInput = taskCell.querySelector('.edit-input');
+            const taskText = taskCell.querySelector('.task-text');
+
+            if (editInput.style.display === "none") {
+                editInput.style.display = "block";
+                editInput.value = taskText.textContent;
+                button.textContent = "حفظ";
+            } else {
+                taskText.textContent = editInput.value;
+                editInput.style.display = "none";
+                button.textContent = "تعديل";
+            }
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const completedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+            const totalCount = checkboxes.length;
+            const progressBar = document.getElementById('progressBar');
+            const progressPercentage = (completedCount / totalCount) * 100;
+
+            progressBar.style.width = progressPercentage + '%';
+        }
+
+        function saveTasksState() {
     const tasks = document.querySelectorAll('.task-cell');
     const tasksState = Array.from(tasks).map(task => ({
         text: task.querySelector('.task-text').textContent,
@@ -461,7 +498,6 @@ function saveTasksState() {
     localStorage.setItem('englishLearningTasks', JSON.stringify(tasksState));
 }
 
-// دالة لاسترجاع حالة المهام من localStorage
 function loadTasksState() {
     const savedTasks = localStorage.getItem('englishLearningTasks');
     if (savedTasks) {
@@ -472,33 +508,22 @@ function loadTasksState() {
                 const task = tasks[index];
                 task.querySelector('.task-text').textContent = state.text;
                 task.querySelector('.checkbox').checked = state.completed;
-                if (state.completed) {
-                    task.classList.add('completed');
-                    task.querySelector('.task-text').style.textDecoration = 'line-through';
-                }
+                updateTaskAppearance(task, state.completed);
             }
         });
     }
     updateProgress();
 }
 
-// تعديل دالة toggleTask لحفظ الحالة بعد كل تغيير
 function toggleTask(checkbox) {
     const taskCell = checkbox.closest('.task-cell');
-    const taskText = taskCell.querySelector('.task-text');
+    const isCompleted = checkbox.checked;
 
-    if (checkbox.checked) {
-        taskCell.classList.add('completed');
-        taskText.style.textDecoration = 'line-through';
-    } else {
-        taskCell.classList.remove('completed');
-        taskText.style.textDecoration = 'none';
-    }
+    updateTaskAppearance(taskCell, isCompleted);
     updateProgress();
-    saveTasksState();  // حفظ الحالة بعد التغيير
+    saveTasksState();  // Save state after changes
 }
 
-// تعديل دالة editTask لحفظ الحالة بعد التعديل
 function editTask(button) {
     const taskCell = button.closest('.task-cell');
     const editInput = taskCell.querySelector('.edit-input');
@@ -512,12 +537,23 @@ function editTask(button) {
         taskText.textContent = editInput.value;
         editInput.style.display = "none";
         button.textContent = "تعديل";
-        saveTasksState();  // حفظ الحالة بعد التعديل
+        saveTasksState();  // Save state after editing
     }
 }
 
-// إضافة استدعاء loadTasksState عند تحميل الصفحة
+function updateTaskAppearance(taskCell, isCompleted) {
+    const taskText = taskCell.querySelector('.task-text');
+    if (isCompleted) {
+        taskCell.classList.add('completed');
+        taskText.style.textDecoration = 'line-through';
+    } else {
+        taskCell.classList.remove('completed');
+        taskText.style.textDecoration = 'none';
+    }
+}
+
 window.onload = loadTasksState;
+
     </script>
 </body>
 </html>
