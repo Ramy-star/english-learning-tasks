@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #f6f8ff 0%, #e9f0ff 100%);
+            font-size: 16px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #2D3250;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: bounceIn 0.8s ease-in-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #424874 0%, #2D3250 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .day-cell {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 12px;
+            min-width: 150px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            color: white;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .day-cell:nth-child(odd) {
+            background: linear-gradient(135deg, #F4B860 0%, #F4A460 100%);
+        }
+
+        .day-cell:nth-child(even) {
+            background: linear-gradient(135deg, #FF9A8B 0%, #FF8E9E 100%);
+        }
+
+        .task-cell {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            transform: perspective(500px) translateZ(0);
+        }
+
+        .task-cell:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-cell.completed {
+            background-color: #d4edda;
+            animation: bounceCompleted 0.6s ease;
+        }
+
+        @keyframes bounceCompleted {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .checkbox {
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            accent-color: #4CAF50;
+        }
+
+        .task-text {
+            font-size: 18px;
+            color: #2D3250;
+            flex-grow: 1;
+            margin: 0 15px;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #7A86B6 0%, #6870A4 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(122, 134, 182, 0.3);
+        }
+
+        .status-cell {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2D3250;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1.2s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .progress-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2D3250;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 15px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #7A86B6;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 60%;
+            display: none;
+        }
+
+        .edit-confirm {
+            display: none;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        .day-cell:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>جدول المهام الأسبوعي لتعلم اللغة الإنجليزية 🎯</h2>
+        <div class="progress-container">
+            <div class="progress-title">تقدم الأسبوع</div>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+        </div>
+        <table>
+            <tr>
+                <th>اليوم 📅</th>
+                <th>المهام 📝</th>
+                <th>الحالة ✔️</th>
+            </tr>
+            <!-- السبت -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%)">السبت 🌅</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">تعلم 10 كلمات جديدة 📚</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">مراجعة قاعدة النحو 📝</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">مشاهدة فيديو تعليمي 🎥</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+
+            <!-- الأحد -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #87CEFA 0%, #00BFFF 100%)">الأحد ☀️</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">قراءة 20 صفحة من كتاب 📖</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">كتابة ملخص عن المقالات ✍️</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">ممارسة التحدث مع شخص آخر 💬</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+
+            <!-- الإثنين -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%)">الإثنين 📅</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">ممارسة المحادثة مع صديق 💬</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">تدريب على النطق 📣</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">كتابة نص قصير باللغة الإنجليزية ✍️</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+
+            <!-- الثلاثاء -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #8A2BE2 0%, #7B68EE 100%)">الثلاثاء 🌈</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">حضور دورة تدريبية عبر الإنترنت 📅</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">إعداد قائمة مفردات جديدة 📜</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">قراءة مقال باللغة الإنجليزية 📰</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+
+            <!-- الأربعاء -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%)">الأربعاء 🌼</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">تبادل المحادثات مع متحدثين أصليين 🌍</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">استماع إلى بودكاست باللغة الإنجليزية 🎧</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">ممارسة الكتابة عن موضوع معين ✍️</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+
+            <!-- الخميس -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%)">الخميس 📆</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">استماع إلى محاضرة عبر الإنترنت 🎧</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">مشاهدة فيلم باللغة الإنجليزية 🎬</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">تحضير لمناقشة باللغة الإنجليزية 📢</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+
+            <!-- الجمعة -->
+            <tr>
+                <td class="day-cell" style="background: linear-gradient(135deg, #87CEFA 0%, #00BFFF 100%)">الجمعة 🌇</td>
+                <td>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">مراجعة جميع المهارات المكتسبة ✅</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">تدوين الأفكار والتجارب الجديدة 📝</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                    <div class="task-cell">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox" onchange="toggleTask(this)">
+                            <span class="task-text">مشاركة المهارات مع الآخرين 🌟</span>
+                            <input type="text" class="edit-input" />
+                            <button class="edit-btn" onclick="editTask(this)">تعديل</button>
+                        </div>
+                    </div>
+                </td>
+                <td class="status-cell">🔄 قيد التنفيذ</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function toggleTask(checkbox) {
+            const taskCell = checkbox.closest('.task-cell');
+            const taskText = taskCell.querySelector('.task-text');
+
+            if (checkbox.checked) {
+                taskCell.classList.add('completed');
+                taskText.style.textDecoration = 'line-through';
+            } else {
+                taskCell.classList.remove('completed');
+                taskText.style.textDecoration = 'none';
+            }
+            updateProgress();
+        }
+
+        function editTask(button) {
+            const taskCell = button.closest('.task-cell');
+            const editInput = taskCell.querySelector('.edit-input');
+            const taskText = taskCell.querySelector('.task-text');
+
+            if (editInput.style.display === "none") {
+                editInput.style.display = "block";
+                editInput.value = taskText.textContent;
+                button.textContent = "حفظ";
+            } else {
+                taskText.textContent = editInput.value;
+                editInput.style.display = "none";
+                button.textContent = "تعديل";
+            }
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const completedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+            const totalCount = checkboxes.length;
+            const progressBar = document.getElementById('progressBar');
+            const progressPercentage = (completedCount / totalCount) * 100;
+
+            progressBar.style.width = progressPercentage + '%';
+        }
+    </script>
+</body>
+</html>
